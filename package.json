@@ -1,0 +1,37 @@
+{
+  "name": "proweblook-airtable-extension",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "ProWebLook for Airtable — Custom Extension (@airtable/blocks) & Automation scripts for bulk Email, Phone Carrier/VoIP, Silent WhatsApp, and Caller ID lead verification.",
+  "keywords": [
+    "airtable",
+    "airtable-blocks",
+    "airtable-extension",
+    "airtable-automation",
+    "email-verification",
+    "phone-validation",
+    "whatsapp-checker",
+    "caller-id",
+    "lead-enrichment",
+    "proweblook"
+  ],
+  "homepage": "https://proweblook.com/airtable",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dubeychandan996/proweblook-airtable.git"
+  },
+  "scripts": {
+    "test": "node --test test/airtable-extension.test.mjs",
+    "validate": "node scripts/validate-package.mjs",
+    "pack:zip": "node scripts/package-zip.mjs"
+  },
+  "dependencies": {
+    "@airtable/blocks": "^1.9.0",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT"
+}
