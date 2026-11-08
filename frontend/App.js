@@ -132,6 +132,7 @@ export function ProWebLookAirtableApp() {
     error: '',
   });
   const [copiedKey, setCopiedKey] = useState('');
+  const [showAdvancedOutputs, setShowAdvancedOutputs] = useState(false);
 
   const storedApiKey = sanitizeApiKey(String(globalConfig.get(GLOBAL_CONFIG_KEYS.API_KEY) || ''));
   const selectedTableId = globalConfig.get(GLOBAL_CONFIG_KEYS.TABLE_ID);
@@ -152,24 +153,54 @@ export function ProWebLookAirtableApp() {
   const enableWhatsapp = globalConfig.get(GLOBAL_CONFIG_KEYS.ENABLE_WHATSAPP) !== false;
   const enableCallerId = Boolean(globalConfig.get(GLOBAL_CONFIG_KEYS.ENABLE_CALLER_ID));
 
+  const sourceEmailField = String(globalConfig.get(GLOBAL_CONFIG_KEYS.SRC_EMAIL_FIELD) || '');
+  const sourcePhoneField = String(globalConfig.get(GLOBAL_CONFIG_KEYS.SRC_PHONE_FIELD) || '');
+  const sourceNameField = String(globalConfig.get(GLOBAL_CONFIG_KEYS.SRC_NAME_FIELD) || '');
+  const emailVerdictOutputField = String(globalConfig.get(GLOBAL_CONFIG_KEYS.OUT_EMAIL_VERDICT) || '');
+  const phoneVerdictOutputField = String(globalConfig.get(GLOBAL_CONFIG_KEYS.OUT_PHONE_VERDICT) || '');
+  const phoneCarrierOutputField = String(globalConfig.get(GLOBAL_CONFIG_KEYS.OUT_PHONE_CARRIER) || '');
+  const phoneLineTypeOutputField = String(globalConfig.get(GLOBAL_CONFIG_KEYS.OUT_PHONE_LINE_TYPE) || '');
+  const normalizedPhoneOutputField = String(globalConfig.get(GLOBAL_CONFIG_KEYS.OUT_NORMALIZED_PHONE) || '');
+  const whatsappVerdictOutputField = String(globalConfig.get(GLOBAL_CONFIG_KEYS.OUT_WHATSAPP_VERDICT) || '');
+  const callerNameOutputField = String(globalConfig.get(GLOBAL_CONFIG_KEYS.OUT_CALLER_NAME) || '');
+  const trustScoreOutputField = String(globalConfig.get(GLOBAL_CONFIG_KEYS.OUT_TRUST_SCORE) || '');
+  const riskVerdictOutputField = String(globalConfig.get(GLOBAL_CONFIG_KEYS.OUT_RISK_VERDICT) || '');
+  const summaryOutputField = String(globalConfig.get(GLOBAL_CONFIG_KEYS.OUT_SUMMARY) || '');
+  const verifiedAtOutputField = String(globalConfig.get(GLOBAL_CONFIG_KEYS.OUT_VERIFIED_AT) || '');
+
   const mapping = useMemo(
     () => ({
-      sourceEmailField: globalConfig.get(GLOBAL_CONFIG_KEYS.SRC_EMAIL_FIELD) || '',
-      sourcePhoneField: globalConfig.get(GLOBAL_CONFIG_KEYS.SRC_PHONE_FIELD) || '',
-      sourceNameField: globalConfig.get(GLOBAL_CONFIG_KEYS.SRC_NAME_FIELD) || '',
-      emailVerdictOutputField: globalConfig.get(GLOBAL_CONFIG_KEYS.OUT_EMAIL_VERDICT) || '',
-      phoneVerdictOutputField: globalConfig.get(GLOBAL_CONFIG_KEYS.OUT_PHONE_VERDICT) || '',
-      phoneCarrierOutputField: globalConfig.get(GLOBAL_CONFIG_KEYS.OUT_PHONE_CARRIER) || '',
-      phoneLineTypeOutputField: globalConfig.get(GLOBAL_CONFIG_KEYS.OUT_PHONE_LINE_TYPE) || '',
-      normalizedPhoneOutputField: globalConfig.get(GLOBAL_CONFIG_KEYS.OUT_NORMALIZED_PHONE) || '',
-      whatsappVerdictOutputField: globalConfig.get(GLOBAL_CONFIG_KEYS.OUT_WHATSAPP_VERDICT) || '',
-      callerNameOutputField: globalConfig.get(GLOBAL_CONFIG_KEYS.OUT_CALLER_NAME) || '',
-      trustScoreOutputField: globalConfig.get(GLOBAL_CONFIG_KEYS.OUT_TRUST_SCORE) || '',
-      riskVerdictOutputField: globalConfig.get(GLOBAL_CONFIG_KEYS.OUT_RISK_VERDICT) || '',
-      summaryOutputField: globalConfig.get(GLOBAL_CONFIG_KEYS.OUT_SUMMARY) || '',
-      verifiedAtOutputField: globalConfig.get(GLOBAL_CONFIG_KEYS.OUT_VERIFIED_AT) || '',
+      sourceEmailField,
+      sourcePhoneField,
+      sourceNameField,
+      emailVerdictOutputField,
+      phoneVerdictOutputField,
+      phoneCarrierOutputField,
+      phoneLineTypeOutputField,
+      normalizedPhoneOutputField,
+      whatsappVerdictOutputField,
+      callerNameOutputField,
+      trustScoreOutputField,
+      riskVerdictOutputField,
+      summaryOutputField,
+      verifiedAtOutputField,
     }),
-    [globalConfig]
+    [
+      sourceEmailField,
+      sourcePhoneField,
+      sourceNameField,
+      emailVerdictOutputField,
+      phoneVerdictOutputField,
+      phoneCarrierOutputField,
+      phoneLineTypeOutputField,
+      normalizedPhoneOutputField,
+      whatsappVerdictOutputField,
+      callerNameOutputField,
+      trustScoreOutputField,
+      riskVerdictOutputField,
+      summaryOutputField,
+      verifiedAtOutputField,
+    ]
   );
 
   const queueStats = useMemo(() => {
@@ -690,7 +721,115 @@ export function ProWebLookAirtableApp() {
                   shouldAllowPickingNone: true,
                 })
               )
-            )
+            ),
+            h(
+              Button,
+              {
+                size: 'small',
+                variant: 'secondary',
+                marginBottom: 2,
+                onClick: () => setShowAdvancedOutputs((prev) => !prev),
+              },
+              showAdvancedOutputs
+                ? 'Hide Detailed Signal Columns'
+                : 'Map Detailed Signal Columns (Optional)'
+            ),
+            showAdvancedOutputs &&
+              h(
+                Box,
+                {
+                  padding: 2,
+                  backgroundColor: '#f8fafc',
+                  borderRadius: 'default',
+                  marginBottom: 2,
+                },
+                h(
+                  Box,
+                  { display: 'flex', marginBottom: 2, style: { gap: '8px' } },
+                  h(
+                    Box,
+                    { flex: 1 },
+                    h(Text, { size: 'small', marginBottom: 1 }, 'Output: Email Verdict'),
+                    h(FieldPickerSynced, {
+                      table,
+                      globalConfigKey: GLOBAL_CONFIG_KEYS.OUT_EMAIL_VERDICT,
+                      shouldAllowPickingNone: true,
+                    })
+                  ),
+                  h(
+                    Box,
+                    { flex: 1 },
+                    h(Text, { size: 'small', marginBottom: 1 }, 'Output: Phone Verdict'),
+                    h(FieldPickerSynced, {
+                      table,
+                      globalConfigKey: GLOBAL_CONFIG_KEYS.OUT_PHONE_VERDICT,
+                      shouldAllowPickingNone: true,
+                    })
+                  )
+                ),
+                h(
+                  Box,
+                  { display: 'flex', marginBottom: 2, style: { gap: '8px' } },
+                  h(
+                    Box,
+                    { flex: 1 },
+                    h(Text, { size: 'small', marginBottom: 1 }, 'Output: Carrier'),
+                    h(FieldPickerSynced, {
+                      table,
+                      globalConfigKey: GLOBAL_CONFIG_KEYS.OUT_PHONE_CARRIER,
+                      shouldAllowPickingNone: true,
+                    })
+                  ),
+                  h(
+                    Box,
+                    { flex: 1 },
+                    h(Text, { size: 'small', marginBottom: 1 }, 'Output: Line Type'),
+                    h(FieldPickerSynced, {
+                      table,
+                      globalConfigKey: GLOBAL_CONFIG_KEYS.OUT_PHONE_LINE_TYPE,
+                      shouldAllowPickingNone: true,
+                    })
+                  )
+                ),
+                h(
+                  Box,
+                  { display: 'flex', marginBottom: 2, style: { gap: '8px' } },
+                  h(
+                    Box,
+                    { flex: 1 },
+                    h(Text, { size: 'small', marginBottom: 1 }, 'Output: Normalized Phone'),
+                    h(FieldPickerSynced, {
+                      table,
+                      globalConfigKey: GLOBAL_CONFIG_KEYS.OUT_NORMALIZED_PHONE,
+                      shouldAllowPickingNone: true,
+                    })
+                  ),
+                  h(
+                    Box,
+                    { flex: 1 },
+                    h(Text, { size: 'small', marginBottom: 1 }, 'Output: Caller Name'),
+                    h(FieldPickerSynced, {
+                      table,
+                      globalConfigKey: GLOBAL_CONFIG_KEYS.OUT_CALLER_NAME,
+                      shouldAllowPickingNone: true,
+                    })
+                  )
+                ),
+                h(
+                  Box,
+                  { display: 'flex', style: { gap: '8px' } },
+                  h(
+                    Box,
+                    { flex: 1 },
+                    h(Text, { size: 'small', marginBottom: 1 }, 'Output: Verified At'),
+                    h(FieldPickerSynced, {
+                      table,
+                      globalConfigKey: GLOBAL_CONFIG_KEYS.OUT_VERIFIED_AT,
+                      shouldAllowPickingNone: true,
+                    })
+                  )
+                )
+              )
           ),
 
         h(Switch, {
@@ -942,7 +1081,22 @@ export function ProWebLookAirtableApp() {
               onClick: handleSaveAndTestKey,
             },
             isCheckingBalance ? 'Validating...' : 'Save & Check Credits'
-          )
+          ),
+          (storedApiKey || apiKeyDraft) &&
+            h(
+              Button,
+              {
+                variant: 'secondary',
+                disabled: isCheckingBalance,
+                onClick: async () => {
+                  setApiKeyDraft('');
+                  setBalances(null);
+                  setBalanceError('');
+                  await setGlobalIfPermitted(GLOBAL_CONFIG_KEYS.API_KEY, '');
+                },
+              },
+              'Clear Key'
+            )
         ),
         balanceError &&
           h(Text, { size: 'small', textColor: '#b91c1c', marginBottom: 2 }, balanceError),
